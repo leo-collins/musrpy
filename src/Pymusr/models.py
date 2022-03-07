@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 from scipy.optimize import curve_fit
-from scipy.stats import power_divergence
 
 
 def exp_decay_osc(x: float, initial: float, asym: float, frequency: float, phase: float) -> float:

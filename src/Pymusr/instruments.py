@@ -6,6 +6,7 @@ import uproot as up
 from models import FitFunction
 
 
+# noinspection DuplicatedCode
 class MuonInstrument:
     """Class representing a muon instrument. Instance attributes are name of instrument, number of detectors, and how
     detectors are grouped.
@@ -38,15 +39,15 @@ class MuonInstrument:
         :param num_detectors: Total number of detectors for the instrument
         :param detector_groups: Dictionary of detector groups. Names are keys, values are slices.
         """
-        self.mac = None
-        self.v1190 = None
-        self.data = None
-        self.model_dict = {}
-        self.num_events = None
-        self.data_path = None
         self.num_detectors = num_detectors
         self.groups = detector_groups
         self.name = name
+        self.model_dict = {}
+        self.mac = None
+        self.v1190 = None
+        self.data = None
+        self.num_events = None
+        self.data_path = None
 
     def __repr__(self):
         return f"MuonInstrument({self.name})"
@@ -153,7 +154,6 @@ class MuonInstrument:
                     self.data[group][(self.data["time"] >= start_time) & (self.data["time"] <= end_time)],
                     s=1, label=f"rate = {self.data[group].sum() / self.num_events}")
         if plot_fit:
-
             plt.plot(self.data["time"][(self.data["time"] >= start_time) & (self.data["time"] <= end_time)],
                      self.model_dict[group].curve(
                          self.data["time"][(self.data["time"] >= start_time) & (self.data["time"] <= end_time)],
@@ -210,7 +210,7 @@ class MuonInstrument:
         if show_plot:
             plt.show()
 
-    def get_histogram(self, hist_name: str, condition: int, show_plot: bool = True) -> tuple:
+    def plot_histogram(self, hist_name: str, condition: int, show_plot: bool = True) -> tuple:
         with up.open(fr"{self.data_path}/his_{self.mac}_{self.v1190}.v1190.root")[f"{hist_name}_{condition};1"] as f:
             if f.axes.__len__() == 2:
                 fig, ax = plt.subplots(dpi=200)
