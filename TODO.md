@@ -5,6 +5,7 @@
 - [ ] Change plot methods to use OOP matplotlib instead of pyplot
 - [ ] Add goodness of fit (RMSE?, Chi-squared?)
 - [ ] Change label for asymmetry plot
+- [ ] Store standard groupings in files (pickle or JSON?)
 
 ## long term
 - [ ] Write documentation (readthedocs?)
