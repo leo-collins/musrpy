@@ -188,13 +188,13 @@ class MuonInstrument:
         :param initial_guess: Option to change starting point for iteration. Defaults defined in models.py
         :param bounds: Option to place bounds on parameters.
         """
-        if self.model_dict.get(group) is None:
-            self.fit(group, "ExpDecayOsc", start_time=start_time, end_time=end_time, initial_guess=initial_guess,
-                     bounds=bounds)
+
         plt.scatter(self.data["time"][(self.data["time"] >= start_time) & (self.data["time"] <= end_time)],
                     self.data[group][(self.data["time"] >= start_time) & (self.data["time"] <= end_time)],
                     s=1, label=f"rate = {self.data[group].sum() / self.num_events}")
         if plot_fit:
+            self.fit(group, "ExpDecayOsc", start_time=start_time, end_time=end_time, initial_guess=initial_guess,
+                     bounds=bounds)
             plt.plot(self.data["time"][(self.data["time"] >= start_time) & (self.data["time"] <= end_time)],
                      self.model_dict[group].curve(
                          self.data["time"][(self.data["time"] >= start_time) & (self.data["time"] <= end_time)],
@@ -228,14 +228,13 @@ class MuonInstrument:
         """
         if getattr(self, f"pair_{pair}").asymmetry is None:
             getattr(self, f"pair_{pair}").get_asymmetry()
-        if self.model_dict.get(pair) is None:
-            self.fit(pair, "Sinusoid", start_time=start_time, end_time=end_time,
-                     initial_guess=initial_guess, bounds=bounds)
         plt.scatter(self.data["time"][(self.data["time"] >= start_time) & (self.data["time"] <= end_time)],
                     getattr(self, f"pair_{pair}").asymmetry[0][(self.data["time"] >= start_time)
                                                                & (self.data["time"] <= end_time)],
                     s=1, label=f"rate = {getattr(self, f'pair_{pair}').asymmetry.sum() / self.num_events}")
         if plot_fit:
+            self.fit(pair, "Sinusoid", start_time=start_time, end_time=end_time,
+                     initial_guess=initial_guess, bounds=bounds)
             plt.plot(self.data["time"][(self.data["time"] >= start_time) & (self.data["time"] <= end_time)],
                      self.model_dict[pair].curve(
                          self.data["time"][(self.data["time"] >= start_time) & (self.data["time"] <= end_time)],
