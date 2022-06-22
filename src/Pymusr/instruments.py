@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import uproot as up
-from models import FitFunction
+from src.Pymusr.models import FitFunction
 
 
 # noinspection DuplicatedCode
