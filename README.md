@@ -1,4 +1,4 @@
-# Pymusr
+# musrpy
 
 Description Here
 
