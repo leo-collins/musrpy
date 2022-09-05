@@ -10,10 +10,10 @@
 ## long term
 - [ ] Write documentation (readthedocs?)
 - [ ] Add errors to counts and asymmetry (maybe this will improve fit)
-- [ ] Get num_events from .v1190.root?
-  - [ ] Maybe get num_events from .mac file?
-    - [ ] Change data path to directory containing .mac files
-- [ ] Check minimum version of python in setup.cfg
+- [x] Get num_events from .v1190.root?
+  - [x] Maybe get num_events from .mac file?
+    - [x] Change data path to directory containing .mac files
+- [ ] Check minimum version of python in setup.cfg (minimum is version 3.10 because type hints)
 - [ ] Add GUI
 
 ## Done
@@ -31,3 +31,5 @@
 - [x] Add method to plot any histogram from .v1190.root file
   - [x] Deal with all 3 cases - plain histogram, 2D histogram, categorical histogram
   - [x] Return numpy arrays of data for further analysis if required
+- [x] Add option to change number of bins on histograms
+- [x] Add ability to plot histograms from the musrSim root file

@@ -1,20 +1,19 @@
-.. Pymusr documentation master file, created by
-   sphinx-quickstart on Tue May 10 17:02:10 2022.
+.. musrpy documentation master file, created by
+   sphinx-quickstart on Mon Sep  5 15:56:34 2022.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Pymusr's documentation!
+Welcome to musrpy's documentation!
 ==================================
 
+**Musrpy** is a Python library for analysing ROOT histograms created by the muon
+simulation programs musrSim and musrSimAna. Check out the :doc:`usage` section for
+further information, including how to :ref:`install <installation>` the project.
+
+Contents
+--------
+
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   usage
+   api
