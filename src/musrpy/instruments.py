@@ -3,8 +3,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import uproot as up
-from src.Pymusr.models import FitFunction
-
+from models import FitFunction
+# from src.musrpy.models import FitFunction
 
 class MuonInstrument:
     """Class representing a muon instrument. Instance attributes are name of instrument, number of detectors, and how
@@ -267,7 +267,7 @@ class MuonInstrument:
                             self.data["time"][(self.data["time"] >= start_time) & (self.data["time"] <= end_time)],
                             *self.model_dict[grouping].model[0]),
                         "r-", label=self.model_dict[grouping].graph_label)
-            ax.set_title(f"{self.name}, {self.mac}.mac, {self.v1190}.v1190, {grouping}")
+            ax.set_title(f"{self.name}, {self.mac}.mac, {self.v1190}.v1190")
             ax.set_xlabel(r"time ($\mu$s)")
             ax.set_ylabel("n")
             ax.legend(loc="upper center", fontsize="x-small")
@@ -300,8 +300,7 @@ class MuonInstrument:
             getattr(self, f"pair_{pair}").get_asymmetry()
         plt.scatter(self.data["time"][(self.data["time"] >= start_time) & (self.data["time"] <= end_time)],
                     getattr(self, f"pair_{pair}").asymmetry[0][(self.data["time"] >= start_time)
-                                                               & (self.data["time"] <= end_time)],
-                    s=1, label=f"rate = {getattr(self, f'pair_{pair}').asymmetry.sum() / self.num_events}")
+                                                               & (self.data["time"] <= end_time)], s=1)
         if plot_fit:
             self.fit(pair, "Sinusoid", start_time=start_time, end_time=end_time,
                      initial_guess=initial_guess, bounds=bounds)
@@ -310,10 +309,11 @@ class MuonInstrument:
                          self.data["time"][(self.data["time"] >= start_time) & (self.data["time"] <= end_time)],
                          *self.model_dict[pair].model[0]),
                      "r-", label=self.model_dict[pair].graph_label)
-        plt.title(f"{self.name}, {self.mac}, pair_{pair} asymmetry")
+            plt.legend(fontsize="x-small")
+        plt.title(f"{self.name}, {self.mac}, {self.v1190}, pair_{pair} asymmetry")
         plt.xlabel(r"time ($\mu$s)")
         plt.ylabel("asymmetry")
-        plt.legend(loc="upper center", fontsize="x-small")
+        plt.tight_layout()
         if save_path is None:
             pass
         else:
