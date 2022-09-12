@@ -64,7 +64,6 @@ API
               .       .         .
               .       .         .
 
-
     .. py:method:: load_and_group_data(mac, v1190, path, bins=2000)
 
         A convenience method that combines the :any:`load_data` and :any:`group_data` methods into a single method. It first calls :any:`load_data`, then :any:`group_data`.
@@ -85,13 +84,13 @@ API
 
         :param name: Name of detector group/pair to fit.
         :type name: str
-        :param function: Function to fit to data. Can be one of xxx found in xxx.
+        :param function: Function to fit to data. Can be one of :any:`ExpDecayOsc <exp_decay_osc>`, :any:`Sinusoid <sinusoid>`, :any:`ExpDecay <exp_decay>`, and :any:`Linear <linear>` found in :any:`functions`.
         :type function: str
         :param start_time: Optional. Start time to regress from.
         :type start_time: float
         :param end_time: Optional. End time to regress to.
         :type end_time: float
-        :param initial_guess: Optional. List of initial parameters for regression. See curve_fit documentation for details. Default is obtained from xxx
+        :param initial_guess: Optional. List of initial parameters for regression. See curve_fit documentation for details. Default is obtained from :any:`functions`.
         :type initial_guess: list[float]
         :param bounds: Optional. Bounds can be placed on the parameters. See curve_fit documentation for details.
         :type bounds: tuple[list[float], list[float]]
@@ -103,7 +102,7 @@ API
 
         :param group: Detector grouping or list of groups to plot.
         :type group: str | list[str]
-        :param plot_fit: If true then the :any:`fit` method is called for the group(s) and is shown on the plot.
+        :param plot_fit: If true then the :any:`musrpy.instruments.MuonInstrument.fit` method is called for the group(s) and is shown on the plot.
         :type plot_fit: bool
         :param start_time: Optional. Start time to regress from.
         :type start_time: float
@@ -113,7 +112,7 @@ API
         :type save_path: str
         :param show_plot: Optional. If true then the plot will be shown when the method is called.
         :type show_plot: bool
-        :param initial_guess: Optional. List of initial parameters for regression. See curve_fit documentation for details. Default is obtained from xxx
+        :param initial_guess: Optional. List of initial parameters for regression. See curve_fit documentation for details. Default is obtained from :any:`functions`.
         :type initial_guess: list[float]
         :param bounds: Optional. Bounds can be placed on the parameters. See curve_fit documentation for details.
         :type bounds: tuple[list[float], list[float]]
@@ -124,7 +123,7 @@ API
 
         :param pair: Group pair to plot.
         :type pair: str
-        :param plot_fit: If true then the :any:`fit` method is called for the pair and is shown on the plot.
+        :param plot_fit: If true then the :any:`musrpy.instruments.MuonInstrument.fit` method is called for the pair and is shown on the plot.
         :type plot_fit: bool
         :param start_time: Optional. Start time to regress from.
         :type start_time: float
@@ -134,7 +133,7 @@ API
         :type save_path: str
         :param show_plot: Optional. If true then the plot will be shown when the method is called.
         :type show_plot: bool
-        :param initial_guess: Optional. List of initial parameters for regression. See curve_fit documentation for details. Default is obtained from xxx
+        :param initial_guess: Optional. List of initial parameters for regression. See curve_fit documentation for details. Default is obtained from :any:`functions`.
         :type initial_guess: list[float]
         :param bounds: Optional. Bounds can be placed on the parameters. See curve_fit documentation for details.
         :type bounds: tuple[list[float], list[float]]
@@ -164,4 +163,162 @@ API
 
     .. py:method:: create_pair(pair_name, group_1, group_2)
 
-        Creates a pair object from the two given groups. This is saved as a new attribute of the :any:`MuonInstrument`
+        Creates a pair object from the two given groups. This is saved as a new attribute of the :any:`MuonInstrument` called pair_pair_name.
+
+        :param pair_name: Name of pair.
+        :type pair_name: str
+        :param group_1: Name of first detector group in pair.
+        :type group_1: str
+        :param group_2: Name of second detector group in pair.
+        :type group_2: str
+
+
+.. py:class:: musrpy.instruments.Pair(name, instrument, group_1, group_2)
+
+    An object representing a pair of detector groups. From this we can calculate the asymmetry between these two groups.
+
+    :param name: Name of pair.
+    :type name: str
+    :param instrument: Associated MuonInstrument object.
+    :type instrument: :any:`MuonInstrument`
+    :param group_1: Name of first (forward) detector group in pair.
+    :type group_1: str
+    :param group_2: Name of second (backward) detector group in pair.
+    :type group_2: str
+
+    .. py:method:: get_alpha()
+
+    Estimates alpha (balance parameter) between the two groups. Used in calculation for asymmetry. Defined as sum(forward) / sum(backward).
+
+    :return: Alpha (balance parameter)
+    :rtype: float
+
+    .. py:method:: get_asymmetry(alpha=None)
+
+    Calculates the asymmetry between the two groups. Defined as (forward - alpha * backward) / (forward + alpha * backward).
+    Returns a pandas DataFrame object with the asymmetry, structured as:
+    ::
+
+            time    asymmetry
+              .       .
+              .       .
+              .       .
+
+    :param alpha: Optional. The balance parameter used in the calculation. By default, it is estimated using the :any:`get_alpha` method.
+    :type alpha: float
+    :return: Asymmetry dataframe.
+    :rtype: pd.DataFrame
+
+.. py:function:: musrpy.models.exp_decay_osc(x, initial, asym, frequency, phase)
+
+    A decaying sinusoid function. A histogram of detector counts against time follows this model. Defined as
+    ::
+
+        initial * np.exp(-0.455 * x) * (1 + asym * np.cos(frequency * x + phase))
+
+    :param x: The function variable.
+    :type x: float
+    :param initial: Initial number of counts.
+    :type initial: float
+    :param asym: Asymmetry.
+    :type asym: float
+    :param frequency: Frequency of oscillations. Proportional to the strength of the transverse magnetic field.
+    :type frequency: float
+    :param phase: Phase of oscillations.
+    :type phase: float
+    :return: Value of the function.
+    :rtype: float
+
+.. py:function:: musrpy.models.sinusoid(x, amplitude, frequency, phase, offset)
+
+    A general sinusoid curve. See https://en.wikipedia.org/wiki/Sinusoidal_model . Used when fitting asymmetry.
+
+    :param x: The function variable.
+    :type x: float
+    :param amplitude: Amplitude of sine wave.
+    :type amplitude: float
+    :param frequency: Frequency of sine wave.
+    :type frequency: float
+    :param phase: Phase of sine wave.
+    :type phase: float
+    :param offset: Vertical offset of sine wave.
+    :type offset: float
+    :return: Value of the function.
+    :rtype: float
+
+.. py:function:: musrpy.models.exp_decay(x, initial, decay)
+
+    An exponential decay model. Here the decay constant could be fixed at 0.455 as we are dealing with only muons decaying. See https://en.wikipedia.org/wiki/Exponential_decay .
+
+    :param x: The function variable.
+    :type x: float
+    :param initial: Initial number.
+    :type intial: float
+    :param decay: Decay constant.
+    :type decay: float
+    :return: Value of the function.
+    :rtype: float
+
+.. py:function:: musrpy.models.linear(x, m, c)
+
+    A straight line y=mx+c.
+
+    :param x: The function variable.
+    :type x: float
+    :param m: Gradient of line.
+    :type m: float
+    :param c: Y-axis intercept of line.
+    :type c: float
+    :return: Value of the function.
+    :rtype: float
+
+.. py:data:: musrpy.models.functions
+
+    A dictionary containing standard initial guesses and graph labels for each function.
+
+    :type: dict[str, tuple[callable, list[float], str]]
+    :value: {"ExpDecayOsc": (exp_decay_osc, [100, 0.2, 8.5, 1], "y = {0:.3f}*exp(-0.455*x)(1 + {1:.3f}*cos({2:.3f}*x + {3:.3f})"), "ExpDecay": (exp_decay, [100, 0.455], "y = {0:.3f}*exp(-{1:.3f}*x)"), "Sinusoid": (sinusoid, [0.2, 8.5, 0.1, 0.1], "y = {0:.3f}*cos({1:.3f}*x + {2:.3f}) + {3:.3f}"), "Linear": (linear, [1, 1], "y = {0:.3f}*x + {:.3f}")}
+
+
+.. py:class:: musrpy.models.FitFunction(function, initial_guess=None, model=None, graph_label=None, rmse=None)
+
+    An object representing some function fitted to some data. Used by the :any:`plot_counts` and :any:`plot_asymmetry` methods when fitting data.
+
+    :param function: Name of function to be fitted to some data. Must be one of: :any:`ExpDecayOsc <exp_decay_osc>`, :any:`Sinusoid <sinusoid>`, :any:`ExpDecay <exp_decay>`, and :any:`Linear <linear>`.
+    :type function: str
+    :param initial_guess: Optional. Initial guess to use when fitting the data. By default it is determined from the :any:`functions` parameter based on which function is being used for the fit.
+    :type initial_guess: list[float]
+    :param model: Optional. A tuple containing the parameters and the covariance of the parameters. See https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.curve_fit.html for details. Is used by the :any:`musrpy.models.FitFunction.fit` method.
+    :type model: tuple
+    :param graph_label: Optional. The label which will appear on plots generated by the :any:`plot_counts` and :any:`plot_asymmetry` methods. By default it is determined from the :any:`functions` parameter based on which function is being used for the fit.
+    :type graph_label: str
+    :param rmse: Optional. The root mean square error of the fit. Calculated in the :any:`musrpy.models.FitFunction.fit` method
+    :type rmse: float
+
+    .. py:method:: curve(x, *parameters)
+
+        Calls the function determined by the classes function parameter. Used in the :any:`plot_counts` and :any:`plot_asymmetry` methods.
+
+        :return: The function evaluated at x.
+        :rtype: float
+
+    .. py:method:: fit(time, data, initial_guess=None, bounds=None, start_time=0, end_time=15)
+
+        Fits the data. Initial guess and bounds can be specified. Used in the :any:`plot_counts` and :any:`plot_asymmetry` methods.
+
+        :param time: Independent variable, usually time.
+        :type time: pd.DataFrame
+        :param data: Dependent variable.
+        :type data: pd.DataFrame
+        :param initial_guess: Optional. List of initial parameters for regression. See curve_fit documentation for details. Default is obtained from :any:`functions`.
+        :type initial_guess: list[float]
+        :param bounds: Optional. Bounds can be placed on the parameters. See curve_fit documentation for details.
+        :type bounds: tuple[list[float], list[float]]
+        :param start_time: Optional. Start time to regress from.
+        :type start_time: float
+        :param end_time: Optional. End time to regress to.
+        :type end_time: float
+
+
+
+
