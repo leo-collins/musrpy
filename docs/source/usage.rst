@@ -18,6 +18,8 @@ Then import
 
     from musrpy.instruments import MuonInstrument
 
+.. _creatinginstrument:
+
 Creating a Muon instrument
 --------------------------
 
